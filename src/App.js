@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Navibtn from "./components/Navibtn";
+import AddQnA from "./components/admin/AddQnA";
+import QnaState from "./context/general/QnaState"
+import ShowQna from "./components/admin/ShowQna";
+import { Home } from "./components/Home";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <QnaState>
+        <BrowserRouter>
+          <Navibtn />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/addqna" element={<AddQnA />} />
+            <Route path="/showqna" element={<ShowQna />} />
+          </Routes>
+        </BrowserRouter>
+      </QnaState>
+    </>
   );
 }
 
