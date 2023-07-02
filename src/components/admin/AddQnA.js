@@ -4,7 +4,7 @@ import qnaContext from '../../context/general/qnaContext';
 
 const AddQnA = () => {
     const [loading, setLoading] = useState(false)
-    const [data, setData] = useState({ course: "bca", sem: "", unit: "", subjectcode: "", question: "", imp: false, ytLink: "", code: "", output: "" })
+    const [data, setData] = useState({ course: "bca", sem: "", unit: "", subjectcode: "", question: "", imp: false, ytLink: ""})
     const editor = useRef(null)
     const [answer, setAnswer] = useState("")
     const { addQnA } = useContext(qnaContext)
@@ -12,7 +12,7 @@ const AddQnA = () => {
     const submitQueAndAns = async (event) => {
         setLoading(true)
         event.preventDefault();
-        await addQnA(data.course, data.sem, data.subjectcode, data.unit, data.question, data.imp, data.ytLink, answer, data.code, data.output)
+        await addQnA(data.course, data.sem, data.subjectcode, data.unit, data.question, data.imp, data.ytLink, answer)
         setLoading(false)
     }
     const handleChange = (event) => setData({ ...data, [event.target.name]: event.target.value })

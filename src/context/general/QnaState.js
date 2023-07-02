@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import QnaContext from "./qnaContext";
 
 const QnaState = (props) => {
+    const [allqna, setAllqna] = useState([])
     const BASE_URL = process.env.REACT_APP_BASE_URL;
-    const addQnA = async (course, sem, subjectCode, unit, question, imp, ytLink, answer, code, codeOutput) => {
+    const addQnA = async (course, sem, subjectCode, unit, question, imp, ytLink, answer) => {
         let headersList = { "Content-Type": "application/json" }
         let bodyContent = JSON.stringify({
             "course": course,
@@ -14,8 +15,6 @@ const QnaState = (props) => {
             "imp": imp,
             "ytLink": ytLink,
             "answer": answer,
-            "code": code,
-            "codeOutput": codeOutput
         });
         let response = await fetch(`${BASE_URL}api/data/addqnA`, {
             method: "POST",
@@ -26,8 +25,64 @@ const QnaState = (props) => {
         console.log(data);
         alert(data.response)
     }
+
+    const getQnA = async () => {
+        let response = await fetch(`${BASE_URL}api/data/getqna`, {
+            method: "GET",
+        });
+        let data = await response.json();
+        await setAllqna(data.response)
+        console.log(allqna);
+    }
+
+    const updateQnA = async (newQnaData, answer) => {
+        const {_id, course, sem, subjectcode, unit, question} = newQnaData
+        let headersList = {
+            "Accept": "*/*",
+            "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+            "Content-Type": "application/json"
+           }
+           
+           let bodyContent = JSON.stringify({
+             "_id": _id,
+             "course": course,
+             "sem": parseInt(sem),
+             "subjectCode": parseInt(subjectcode),
+             "unit": parseInt(unit),
+             "question": question,
+             "answer": answer
+           });
+           
+           let response = await fetch(`${BASE_URL}api/data/updateqna`, { 
+             method: "PUT",
+             body: bodyContent,
+             headers: headersList
+           });
+           
+           let data = await response.json();
+           if (data.success === true) {
+            let newQna = JSON.parse(JSON.stringify(allqna))
+            for (let index = 0; index < newQna.length; index++) {
+                const element = newQna[index];
+                if (element._id === _id) {
+                    newQna[index].course = course;
+                    newQna[index].sem = parseInt(sem);
+                    newQna[index].subjectCode = parseInt(subjectcode);
+                    newQna[index].unit = parseInt(unit);
+                    newQna[index].question = question;
+                    newQna[index].answer = answer;
+                    
+                    break;
+                }
+            }
+            setAllqna(newQna);
+        }
+           return data
+           
+    }
+
     return (
-        <QnaContext.Provider value={{ addQnA }}>
+        <QnaContext.Provider value={{ addQnA, getQnA, allqna, updateQnA }}>
             {props.children}
         </QnaContext.Provider>
     )
