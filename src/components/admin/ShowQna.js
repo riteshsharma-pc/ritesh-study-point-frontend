@@ -37,7 +37,10 @@ const ShowQna = () => {
         console.log(response);
         if (response.success === true) {
             closeEditQna.current.click()
-            alert("note updated successfully")
+            alert("Q&A updated successfully")
+        }
+        else{
+            alert(response.response)
         }
         setLoading(false)
     }

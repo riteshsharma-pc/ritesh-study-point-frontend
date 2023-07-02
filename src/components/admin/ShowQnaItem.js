@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import parser from 'html-react-parser';
+import qnaContext from '../../context/general/qnaContext';
 
 const ShowQnaItem = (props) => {
+    const {deleteQnA} = useContext(qnaContext)
     const { qna, passCurrentQnAToModal } = props
     return (
         <>
@@ -17,7 +19,7 @@ const ShowQnaItem = (props) => {
                 <td style={{ border: "1px solid black" }}>{parser(qna.answer)}</td>
                 <td style={{ border: "1px solid black" }}>{qna.date}</td>
                 <td style={{ border: "1px solid black" }}><button onClick={() => passCurrentQnAToModal(qna)}><i class="bi bi-pencil-square" /></button></td>
-                <td style={{ border: "1px solid black" }}><button><i class="bi bi-trash3-fill"></i></button></td>
+                <td style={{ border: "1px solid black" }}><button onClick={()=> deleteQnA(qna._id) }><i class="bi bi-trash3-fill"></i></button></td>
             </tr>
         </>
     )

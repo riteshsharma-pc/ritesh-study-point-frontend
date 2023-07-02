@@ -36,31 +36,31 @@ const QnaState = (props) => {
     }
 
     const updateQnA = async (newQnaData, answer) => {
-        const {_id, course, sem, subjectcode, unit, question} = newQnaData
+        const { _id, course, sem, subjectcode, unit, question } = newQnaData
         let headersList = {
             "Accept": "*/*",
             "User-Agent": "Thunder Client (https://www.thunderclient.com)",
             "Content-Type": "application/json"
-           }
-           
-           let bodyContent = JSON.stringify({
-             "_id": _id,
-             "course": course,
-             "sem": parseInt(sem),
-             "subjectCode": parseInt(subjectcode),
-             "unit": parseInt(unit),
-             "question": question,
-             "answer": answer
-           });
-           
-           let response = await fetch(`${BASE_URL}api/data/updateqna`, { 
-             method: "PUT",
-             body: bodyContent,
-             headers: headersList
-           });
-           
-           let data = await response.json();
-           if (data.success === true) {
+        }
+
+        let bodyContent = JSON.stringify({
+            "_id": _id,
+            "course": course,
+            "sem": parseInt(sem),
+            "subjectCode": parseInt(subjectcode),
+            "unit": parseInt(unit),
+            "question": question,
+            "answer": answer
+        });
+
+        let response = await fetch(`${BASE_URL}api/data/updateqna`, {
+            method: "PUT",
+            body: bodyContent,
+            headers: headersList
+        });
+
+        let data = await response.json();
+        if (data.success === true) {
             let newQna = JSON.parse(JSON.stringify(allqna))
             for (let index = 0; index < newQna.length; index++) {
                 const element = newQna[index];
@@ -71,18 +71,32 @@ const QnaState = (props) => {
                     newQna[index].unit = parseInt(unit);
                     newQna[index].question = question;
                     newQna[index].answer = answer;
-                    
                     break;
                 }
             }
             setAllqna(newQna);
         }
-           return data
-           
+        return data
+    }
+    const deleteQnA = async (id) => {
+        if (window.confirm("Are you sure to delete this Q&A??")) {
+            let response = await fetch(`${BASE_URL}api/data/deleteqna/${id}`, {
+                method: "DELETE",
+            });
+
+            let data = await response.json();
+            console.log(data);
+            if (data.success === true) {
+                const newQnaData = allqna.filter((allqna) => { return allqna._id !== id })
+                setAllqna(newQnaData)
+                alert("Q&A is deleted")
+            }
+            else alert(data.response)
+        }
     }
 
     return (
-        <QnaContext.Provider value={{ addQnA, getQnA, allqna, updateQnA }}>
+        <QnaContext.Provider value={{ addQnA, getQnA, allqna, updateQnA, deleteQnA }}>
             {props.children}
         </QnaContext.Provider>
     )
