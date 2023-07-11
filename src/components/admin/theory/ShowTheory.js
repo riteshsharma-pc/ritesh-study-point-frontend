@@ -1,43 +1,43 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
-import qnaContext from '../../context/qna/qnaContext'
-import ShowQnaItem from './ShowQnaItem'
 import JoditEditor from 'jodit-react';
+import theoryContext from '../../../context/theory/theoryContext';
+import ShowTheoryItem from './ShowTheoryItem';
 
-const ShowQna = () => {
-    const [data, setData] = useState({ _id: "", course: "", sem: "", unit: "", subjectcode: "", question: "", imp: false, ytLink: "" })
-    const [answer, setAnswer] = useState("")
+const ShowTheory = () => {
+    const [data, setData] = useState({ _id: "", course: "", sem: "", unit: "", subjectcode: "", topic: "", imp: false, ytLink: "" })
+    const [description, setdescription] = useState("")
     const [loading, setLoading] = useState(false)
     const editor = useRef(null)
-    const editQnA = useRef();
-    const closeEditQna = useRef()
-    const { allqna, getQnA, updateQnA } = useContext(qnaContext)
+    const edittheory = useRef();
+    const closeEdittheory = useRef()
+    const { allTheory, getTheory, updateTheory } = useContext(theoryContext)
     useEffect(() => {
-        getQnA();
+        getTheory();
         // eslint-disable-next-line
     }, [])
 
-    const passCurrentQnAToModal = (currentQnA) => {
-        editQnA.current.click()
+    const passCurrenttheoryToModal = (currenttheory) => {
+        edittheory.current.click()
         setData({
-            _id: currentQnA._id,
-            course: currentQnA.course,
-            sem: currentQnA.sem,
-            subjectcode: currentQnA.subjectCode,
-            unit: currentQnA.unit,
-            question: currentQnA.question,
-            imp: currentQnA.imp,
-            ytLink: currentQnA.ytLink,
+            _id: currenttheory._id,
+            course: currenttheory.course,
+            sem: currenttheory.sem,
+            subjectcode: currenttheory.subjectCode,
+            unit: currenttheory.unit,
+            topic: currenttheory.topic,
+            imp: currenttheory.imp,
+            ytLink: currenttheory.ytLink,
         })
-        setAnswer(currentQnA.answer)
+        setdescription(currenttheory.description)
     }
 
-    const sendUpdateQnAReq = async () => {
+    const sendupdateTheoryReq = async () => {
         setLoading(true)
-        const response = await updateQnA(data, answer)
+        const response = await updateTheory(data, description)
         console.log(response);
         if (response.success === true) {
-            closeEditQna.current.click()
-            alert("Q&A updated successfully")
+            closeEdittheory.current.click()
+            alert("Theory updated successfully")
         }
         else alert(response.response)
         setLoading(false)
@@ -54,7 +54,7 @@ const ShowQna = () => {
     return (
         <div>
             {/* <!-- Button trigger modal --> */}
-            <button type="button" ref={editQnA} className="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button type="button" ref={edittheory} className="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Launch demo modal
             </button>
             {/* <!-- Modal --> */}
@@ -82,28 +82,28 @@ const ShowQna = () => {
                             <span className='text-danger'>{data.unit.length === 0 ? " *please enter unit" : ""}</span>
                             <input type="number" className="form-control" name="unit" id="unit" onChange={handleChange} value={data.unit} required />
 
-                            <label className='form-label' htmlFor="question">Question:</label>
-                            <span className='text-danger'>{data.question.length === 0 ? " *please enter question" : ""}</span>
-                            <input type="text" className="form-control" name="question" id="question-input" onChange={handleChange} value={data.question} required />
+                            <label className='form-label' htmlFor="topic">topic:</label>
+                            <span className='text-danger'>{data.topic.length === 0 ? " *please enter topic" : ""}</span>
+                            <input type="text" className="form-control" name="topic" id="topic-input" onChange={handleChange} value={data.topic} required />
 
                             <label className='form-label' htmlFor="imp">is IMP?</label>
                             <input type="checkbox" name="imp" id="imp" value={data.imp} checked={data.imp} onChange={handleCheckboxChange} style={{ height: "30px", width: "30px" }} />
                             <br />
                             <label className='form-label' htmlFor="ytLink">Youtube Tutorial Video Link</label>
                             <input type="text" className='form-control' name="ytLink" id="ytLink" onChange={handleChange} value={data.ytLink} />
-                            <label className='form-label' htmlFor="answer">Enter Answer:</label>
-                            <span className='text-danger'>{answer.length === 0 ? "please enter answer" : ""}</span>
+                            <label className='form-label' htmlFor="description">Enter description:</label>
+                            <span className='text-danger'>{description.length === 0 ? "please enter description" : ""}</span>
                             <JoditEditor
                                 ref={editor}
-                                value={answer}
+                                value={description}
                                 config={config}
-                                onChange={(newContent) => setAnswer(newContent)}
-                                onBlur={(newContent) => setAnswer(newContent)}
+                                onChange={(newContent) => setdescription(newContent)}
+                                onBlur={(newContent) => setdescription(newContent)}
                             />
                         </div>
                         <div className="modal-footer">
-                            <button ref={closeEditQna} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button disabled={data.course.length === 0 || data.sem.length === 0 || data.subjectcode.length === 0 || data.unit.length === 0 || data.question.length === 0 || answer.length === 0 || loading === true} type="button" className="btn btn-primary" onClick={sendUpdateQnAReq}>Save changes</button>
+                            <button ref={closeEdittheory} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button disabled={data.course.length === 0 || data.sem.length === 0 || data.subjectcode.length === 0 || data.unit.length === 0 || data.topic.length === 0 || description.length === 0 || loading === true} type="button" className="btn btn-primary" onClick={sendupdateTheoryReq}>Save changes</button>
                         </div>
                     </div>
                 </div>
@@ -116,18 +116,18 @@ const ShowQna = () => {
                         <td style={{ border: "1px solid black" }}>sem</td>
                         <td style={{ border: "1px solid black" }}>subjectCode</td>
                         <td style={{ border: "1px solid black" }}>unit</td>
-                        <td style={{ border: "1px solid black" }}>question</td>
+                        <td style={{ border: "1px solid black" }}>topic</td>
                         <td style={{ border: "1px solid black" }}>imp</td>
                         <td style={{ border: "1px solid black" }}>YT</td>
-                        <td style={{ border: "1px solid black" }}>answer</td>
+                        <td style={{ border: "1px solid black" }}>description</td>
                         <td style={{ border: "1px solid black" }}>date</td>
                         <td style={{ border: "1px solid black" }}>edit</td>
                         <td style={{ border: "1px solid black" }}>delete</td>
                     </tr>
                 </thead>
                 <tbody style={{ border: "1px solid black" }}>
-                    {allqna.map((qna) => {
-                        return <ShowQnaItem key={qna._id} passCurrentQnAToModal={passCurrentQnAToModal} qna={qna} />
+                    {allTheory.map((theory) => {
+                        return <ShowTheoryItem key={theory._id} passCurrenttheoryToModal={passCurrenttheoryToModal} theory={theory} />
                     })}
                 </tbody>
             </table>
@@ -135,4 +135,4 @@ const ShowQna = () => {
     )
 }
 
-export default ShowQna
+export default ShowTheory

@@ -16,7 +16,7 @@ const QnaState = (props) => {
             "ytLink": ytLink,
             "answer": answer,
         });
-        let response = await fetch(`${BASE_URL}api/data/addqnA`, {
+        let response = await fetch(`${BASE_URL}api/qna/addqnA`, {
             method: "POST",
             body: bodyContent,
             headers: headersList
@@ -27,7 +27,7 @@ const QnaState = (props) => {
     }
 
     const getQnA = async () => {
-        let response = await fetch(`${BASE_URL}api/data/getqna`, {
+        let response = await fetch(`${BASE_URL}api/qna/getqna`, {
             method: "GET",
         });
         let data = await response.json();
@@ -36,7 +36,7 @@ const QnaState = (props) => {
     }
 
     const updateQnA = async (newQnaData, answer) => {
-        const { _id, course, sem, subjectcode, unit, question } = newQnaData
+        const { _id, course, sem, subjectcode, unit, question, imp, ytLink } = newQnaData
         let headersList = {
             "Accept": "*/*",
             "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -50,10 +50,12 @@ const QnaState = (props) => {
             "subjectCode": parseInt(subjectcode),
             "unit": parseInt(unit),
             "question": question,
+            "imp": imp,
+            "ytLink": ytLink,
             "answer": answer
         });
 
-        let response = await fetch(`${BASE_URL}api/data/updateqna`, {
+        let response = await fetch(`${BASE_URL}api/qna/updateqna`, {
             method: "PUT",
             body: bodyContent,
             headers: headersList
@@ -70,6 +72,8 @@ const QnaState = (props) => {
                     newQna[index].subjectCode = parseInt(subjectcode);
                     newQna[index].unit = parseInt(unit);
                     newQna[index].question = question;
+                    newQna[index].imp = imp;
+                    newQna[index].ytLink = ytLink;
                     newQna[index].answer = answer;
                     break;
                 }
@@ -80,7 +84,7 @@ const QnaState = (props) => {
     }
     const deleteQnA = async (id) => {
         if (window.confirm("Are you sure to delete this Q&A??")) {
-            let response = await fetch(`${BASE_URL}api/data/deleteqna/${id}`, {
+            let response = await fetch(`${BASE_URL}api/qna/deleteqna/${id}`, {
                 method: "DELETE",
             });
 
